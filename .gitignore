@@ -1,0 +1,15 @@
+node_modules/
+agent.cjs
+.devtools/
+dist/
+.DS_Store
+*.log
+*.db
+*.sqlite*
+*.env
+.env*
+auth.json
+config.json
+worker.json
+stop.request
+tests/two-rings-preview.png
