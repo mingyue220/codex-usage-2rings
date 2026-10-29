@@ -13,7 +13,8 @@ subprocess.run(['/usr/bin/xcrun', 'clang', '-fobjc-arc', '-O2', '-Wall', '-Wextr
                 '-framework', 'AppKit', '-framework', 'ApplicationServices',
                 'macos/startup/bridge.m', '-o', str(dest)], cwd=root, check=True)
 subprocess.run(['/usr/bin/codesign', '--force', '--sign', '-', '--timestamp=none', str(dest)], check=True)
-for architecture in ('arm64', 'x86_64'):
-    subprocess.run(['/usr/bin/lipo', '-verify_arch', architecture, str(dest)], check=True)
+architectures = set(subprocess.check_output(['/usr/bin/lipo', '-archs', str(dest)], text=True).split())
+if not {'arm64', 'x86_64'} <= architectures:
+    raise SystemExit(f'Missing universal binary architecture: {architectures}')
 subprocess.run(['/usr/bin/codesign', '--verify', '--strict', str(dest)], check=True)
 print('Built universal macOS startup helper (arm64 + x86_64)')
